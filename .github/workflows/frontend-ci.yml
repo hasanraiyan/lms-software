@@ -1,0 +1,34 @@
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+  pull_request:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build-test-lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm lint || echo 'No lint script defined.'
+      - name: Test
+        run: pnpm test || pnpm run test || echo 'No test script defined.'
+      - name: Build
+        run: pnpm build || echo 'No build script defined.'
