@@ -30,9 +30,5 @@ pnpm install
 pnpm run dev
 ```
 
-## CI/CD
-- Automated GitHub Actions run on push and pull request for both backend and frontend.
-- See badges above for current status.
-
 ---
 Feel free to contribute or open issues!
