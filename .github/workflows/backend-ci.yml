@@ -26,7 +26,10 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
+        working-directory: backend
       - name: Lint
         run: pnpm lint || echo 'No lint script defined.'
+        working-directory: backend
       - name: Test
         run: pnpm test || pnpm run test || echo 'No test script defined.'
+        working-directory: backend
