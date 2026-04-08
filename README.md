@@ -1,8 +1,5 @@
 # LMS Software
 
-[![Frontend CI](https://github.com/hasanraiyan/lms-software/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/hasanraiyan/lms-software/actions/workflows/frontend-ci.yml)
-[![Backend CI](https://github.com/hasanraiyan/lms-software/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/hasanraiyan/lms-software/actions/workflows/backend-ci.yml)
-
 ## Overview
 
 This repository contains a monorepo for an LMS (Learning Management System) with separate backend and frontend apps.
