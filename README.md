@@ -4,6 +4,9 @@
 
 This repository contains a monorepo for an LMS (Learning Management System) with separate backend and frontend apps.
 
+### Coding Style & Standards
+- **Backend Design Blueprint:** [Google Doc: Backend Design Blueprint](https://docs.google.com/document/d/1jJ1B8qG3t6zfqsYoPyDIq_hZIkPAjuaSr-ZhzjyjXf8/edit?usp=sharing)
+
 ### Backend
 - Node.js/Express API
 - Located in `backend/`
