@@ -1,0 +1,23 @@
+FAIL tests/auth.test.js
+  ● Test suite failed to run
+
+    ReferenceError: require is not defined
+
+    [0m [90m 11 |[39m [90m// Mock dependencies[39m
+     [90m 12 |[39m jest[33m.[39mmock([32m'../src/models/User.js'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 13 |[39m jest[33m.[39mmock([32m'bcrypt'[39m)[33m;[39m
+     [90m    |[39m                     [31m[1m^[22m[39m
+     [90m 14 |[39m
+     [90m 15 |[39m [36mconst[39m mockRequest [33m=[39m (body [33m=[39m {}[33m,[39m headers [33m=[39m {}) [33m=>[39m ({
+     [90m 16 |[39m   body[33m,[39m[0m
+
+      at require (tests/auth.test.js:13:21)
+      at _getJestObj (tests/auth.test.js:12:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        3.124 s
+Ran all test suites matching tests/auth.test.js.
+(node:23212) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
