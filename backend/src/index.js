@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 
 import healthRouter from './routes/health.js';
-import authRouter from './routes/auth.routes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { startServer } from './server.js';
 import openapiSpecification from './docs/openapi.js';
@@ -22,7 +21,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/health', healthRouter);
-app.use('/api/v1/auth', authRouter);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
