@@ -4,7 +4,7 @@
 - **Parent Epic:** #0 [EPIC] Backend Authentication & User Management
 - **[BLOCKS]:** #5, #6, #7, #8
 - **[BLOCKED BY]:** #1
-- **[STATUS]:** (To be updated by Intern)
+- **[STATUS]:** To be updated by Intern
 
 ## 📝 Description
 Implement secure login, token management, and a reusable authentication middleware.
