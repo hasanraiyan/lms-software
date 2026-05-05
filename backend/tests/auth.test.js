@@ -1,10 +1,11 @@
 import { jest } from '@jest/globals';
 import jwt from 'jsonwebtoken';
 import { auth } from '../src/middlewares/auth.js';
-import { login, logout } from '../src/controllers/authController.js';
+import { login, logout, register, verifyEmailOtp } from '../src/controllers/authController.js';
 import User from '../src/models/User.js';
 import bcrypt from 'bcrypt';
 import { config } from '../src/config/index.js';
+import mailService from '../src/services/mail.service.js';
 
 const mockRequest = (body = {}, headers = {}) => ({
   body,
@@ -70,6 +71,97 @@ describe('Auth Controller', () => {
     res = mockResponse();
     next = mockNext;
     jest.clearAllMocks();
+  });
+
+  describe('register', () => {
+    it('should return 400 if user already exists', async () => {
+      req.body = { email: 'test@example.com', name: 'Test', password: 'password123' };
+      jest.spyOn(User, 'findOne').mockResolvedValue({ email: 'test@example.com' });
+
+      await register(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'User already exists' });
+    });
+
+    it('should register a new user and send email', async () => {
+      req.body = { email: 'new@example.com', name: 'New User', password: 'password123' };
+      jest.spyOn(User, 'findOne').mockResolvedValue(null);
+      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashed_password');
+      jest.spyOn(User.prototype, 'save').mockResolvedValue({});
+      jest.spyOn(mailService, 'generateBasicEmail').mockReturnValue('<html>otp</html>');
+      jest.spyOn(mailService, 'sendEmail').mockResolvedValue({});
+
+      await register(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({
+        message: 'User registered successfully. Please check your email for the verification code.',
+      });
+      expect(mailService.sendEmail).toHaveBeenCalled();
+    });
+  });
+
+  describe('verifyEmailOtp', () => {
+    it('should return 404 if user not found', async () => {
+      req.body = { email: 'notfound@example.com', otp: '123456' };
+      jest.spyOn(User, 'findOne').mockResolvedValue(null);
+
+      await verifyEmailOtp(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
+    });
+
+    it('should return 400 if OTP is incorrect', async () => {
+      req.body = { email: 'test@example.com', otp: 'wrong' };
+      const mockUser = {
+        email: 'test@example.com',
+        otp: '123456',
+        otpExpires: new Date(Date.now() + 10000),
+        isVerified: false,
+      };
+      jest.spyOn(User, 'findOne').mockResolvedValue(mockUser);
+
+      await verifyEmailOtp(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid or expired OTP' });
+    });
+
+    it('should return 400 if OTP is expired', async () => {
+      req.body = { email: 'test@example.com', otp: '123456' };
+      const mockUser = {
+        email: 'test@example.com',
+        otp: '123456',
+        otpExpires: new Date(Date.now() - 10000),
+        isVerified: false,
+      };
+      jest.spyOn(User, 'findOne').mockResolvedValue(mockUser);
+
+      await verifyEmailOtp(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid or expired OTP' });
+    });
+
+    it('should verify email if OTP is correct and not expired', async () => {
+      req.body = { email: 'test@example.com', otp: '123456' };
+      const mockUser = {
+        email: 'test@example.com',
+        otp: '123456',
+        otpExpires: new Date(Date.now() + 10000),
+        isVerified: false,
+        save: jest.fn().mockResolvedValue({}),
+      };
+      jest.spyOn(User, 'findOne').mockResolvedValue(mockUser);
+
+      await verifyEmailOtp(req, res, next);
+
+      expect(mockUser.isVerified).toBe(true);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Email verified successfully' });
+    });
   });
 
   describe('login', () => {
